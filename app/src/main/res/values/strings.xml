@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Call Block</string>
+    <string name="enable_call_blocking">Enable call blocking</string>
+</resources>
