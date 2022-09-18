@@ -2,8 +2,10 @@ package com.example.call_block;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -11,24 +13,56 @@ import androidx.core.app.ActivityCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    Intent serviceIntent;
+    private Intent serviceIntent;
+    private SwitchCompat cellularCallBlockingSwitch;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         grantPhonePermission();
-
-        SwitchCompat enableCallBlockingSwitch = findViewById(R.id.enable_call_blocking);
+        cellularCallBlockingSwitch = findViewById(R.id.cellular_call_blocking_switch);
 
         serviceIntent = new Intent(this, CallBlockingService.class);
 
-        enableCallBlockingSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b)
-                startService(serviceIntent);
-            else
+        cellularCallBlockingSwitch.setOnCheckedChangeListener((compoundButton, b) -> switchCellularCallBlocking(b));
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        cellularCallBlockingSwitch.setChecked(serviceActive());
+    }
+
+    private boolean serviceActive()
+    {
+        return preferences.getBoolean("serviceRunning", false);
+    }
+
+    private void switchCellularCallBlocking(boolean b)
+    {
+        if (b)
+        {
+            if (!serviceActive())
+            {
+                startForegroundService(serviceIntent);
+                preferences.edit().putBoolean("serviceRunning", true).apply();
+            }
+            cellularCallBlockingSwitch.setText(getString(R.string.disable_call_blocking));
+        }
+        else
+        {
+            if (serviceActive())
+            {
                 stopService(serviceIntent);
-        });
+                preferences.edit().putBoolean("serviceRunning", false).apply();
+            }
+            cellularCallBlockingSwitch.setText(getString(R.string.enable_call_blocking));
+        }
     }
 
     private void grantPhonePermission()

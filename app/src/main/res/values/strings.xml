@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Call Block</string>
-    <string name="enable_call_blocking">Enable call blocking</string>
+    <string name="enable_call_blocking">Enable</string>
+    <string name="disable_call_blocking">Disable</string>
+    <string name="call_blocking_is_active">Call blocking is enabled</string>
 </resources>

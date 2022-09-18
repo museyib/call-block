@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Блокировка звонков</string>
+    <string name="enable_call_blocking">Включить</string>
+    <string name="disable_call_blocking">Отключить</string>
+    <string name="call_blocking_is_active">Блокировка звонков включена</string>
+</resources>
